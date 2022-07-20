@@ -1,5 +1,5 @@
-import { createSlice, createSelector, bindActionCreators } from '@reduxjs/toolkit';
-import { getSubredditPost, getPostComments, getSubredditPosts } from '../api/reddit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
+import { getSubredditPosts, getPostComments } from '../api/reddit';
 
 const initialState = {
     post: [],
@@ -70,7 +70,7 @@ export default redditSlice.reducer;
 export const fetchPosts = (subreddit) => async (dispatch) => {
     try {
         dispatch(startGetPosts());
-        const post = await getSubredditPosts(subreddit);
+        const posts = await getSubredditPosts(subreddit);
 
         //adding ShowingComments and comments as additional fields when user wants to showing them. Needs to call to another API endpoint for each post's comments
         const postsWithMetadata = posts.map((post) => ({
@@ -105,8 +105,8 @@ export const selectFilteredPost = createSelector (
         if (searchTerm !== '') {
             return posts.filter((post) => 
                 post.title.toLoweCase().includes(searchTerm.toLoweCase())
-            )
+            );
         }
         return posts;
     }
-)
+);
