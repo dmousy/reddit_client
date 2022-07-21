@@ -1,57 +1,68 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { getSubredditPosts, getPostComments } from '../api/reddit';
-
+ 
+ 
 const initialState = {
-    post: [],
+    posts: [],
     error: false,
     isLoading: false,
     searchTerm: '',
-    selectedSubreddit: '/r/pixelsart',
-};
-
-const redditSlice = createSlice ({
+    selectedSubreddit: '/r/pics/',
+  };
+ 
+  const redditSlice = createSlice({
     name: 'redditPosts',
     initialState,
     reducers: {
-        setPost(state, action) {
-            state.posts = action.payload;
-        },
-        startGetPost(state) {
-            state.isLoading = true;
-            state.error = false;
-        },
-        getPostSuccess(state, action) {
-            state.isLoading = false;
-            state.post = action.payload;
-        },
-        getPostFailed(state) {
-            state.isLoading = false;
-            state.error = true;
-        },
-        setSearchTerm(state, action) {
-            state.searchTerm = action.payload;
-        },
-        setSelectedSubreddit(state, action) {
-            state.selectedSubreddit = action.payload;
-            state.searchTerm = '';
-        },
-        toggleShowingComments(state, action) {
-            state.post[action.payload].showingComments = !state.post[action.payload].showingComments;
-        },
-        stateGetComments(state, action) {
-            //don't fetch comments if we're hidding them
-            state.post[action.payload].showingComments = !state.post[action.payload].showingComments;
-            if (!state.post[action.payload].showingComments) {
-                return;
-            }
-            state.posts[action.payload].loadingComments = false;
-            state.posts[action.payload].error = true;
-        },
+      setPosts(state, action) {
+        state.posts = action.payload;
+      },
+      startGetPosts(state) {
+        state.isLoading = true;
+        state.error = false;
+      },
+      getPostsSuccess(state, action) {
+        state.isLoading = false;
+        state.posts = action.payload;
+      },
+      getPostsFailed(state) {
+        state.isLoading = false;
+        state.error = true;
+      },
+      setSearchTerm(state, action) {
+        state.searchTerm = action.payload;
+      },
+      setSelectedSubreddit(state, action) {
+        state.selectedSubreddit = action.payload;
+        state.searchTerm = '';
+      },
+      toggleShowingComments(state, action) {
+        state.posts[action.payload].showingComments = !state.posts[action.payload]
+          .showingComments;
+      },
+      startGetComments(state, action) {
+        // If we're hiding comment, don't fetch the comments.
+        state.posts[action.payload].showingComments = !state.posts[action.payload]
+          .showingComments;
+        if (!state.posts[action.payload].showingComments) {
+          return;
+        }
+        state.posts[action.payload].loadingComments = true;
+        state.posts[action.payload].error = false;
+      },
+      getCommentsSuccess(state, action) {
+        state.posts[action.payload.index].loadingComments = false;
+        state.posts[action.payload.index].comments = action.payload.comments;
+      },
+      getCommentsFailed(state, action) {
+        state.posts[action.payload].loadingComments = false;
+        state.posts[action.payload].error = true;
+      },
     },
-});
-
-export const {
-    setPost,
+  });
+ 
+  export const {
+    setPosts,
     getPostsFailed,
     getPostsSuccess,
     startGetPosts,
@@ -60,53 +71,54 @@ export const {
     toggleShowingComments,
     getCommentsFailed,
     getCommentsSuccess,
-    startGetComments
-} = redditSlice.actions;
-
-export default redditSlice.reducer;
-
-//redux thunk for comments
-
-export const fetchPosts = (subreddit) => async (dispatch) => {
+    startGetComments,
+  } = redditSlice.actions;
+ 
+  export default redditSlice.reducer;
+ 
+  export const fetchPosts = (subreddit) => async (dispatch) => {
     try {
-        dispatch(startGetPosts());
-        const posts = await getSubredditPosts(subreddit);
-
-        //adding ShowingComments and comments as additional fields when user wants to showing them. Needs to call to another API endpoint for each post's comments
-        const postsWithMetadata = posts.map((post) => ({
-            ...post,
-            showingComments: false,
-            comments: [],
-            loadingComments: false,
-            errorComments: false,
-        }));
-        dispatch(getPostsSuccess(postsWithMetadata));
+      dispatch(startGetPosts());
+      const posts = await getSubredditPosts(subreddit);
+ 
+      const postsWithMetadata = posts.map((post) => ({
+        ...post,
+        showingComments: false,
+        comments: [],
+        loadingComments: false,
+        errorComments: false,
+      }));
+      dispatch(getPostsSuccess(postsWithMetadata));
     } catch (error) {
-        dispatch(getPostsFailed());
+      dispatch(getPostsFailed());
     }
-};
-
-export const fetchComments = (index, permalink) => async (dispatch) => {
+  };
+ 
+  export const fetchComments = (index, permalink) => async (dispatch) => {
     try {
-        dispatch(startGetComments(index));
-        const comments = await getPostComments(permalink);
-        dispatch(getCommentsSuccess({index, comments}));
+      dispatch(startGetComments(index));
+      const comments = await getPostComments(permalink);
+      dispatch(getCommentsSuccess({ index, comments }));
     } catch (error) {
-        dispatch(getCommentsFailed(index));
+      dispatch(getCommentsFailed(index));
     }
-};
-
-const selectPosts = (state) => state.reddit.posts;
-const selectSearchTerm = (state) => state.redit.searchTerm;
-export const selectSelectedSubreddit = (state) => state.reddit.selectedSubreddit;
-
-export const selectFilteredPost = createSelector (
-    [selectPosts, selectSearchTerm], (posts, searchTerm) => {
-        if (searchTerm !== '') {
-            return posts.filter((post) => 
-                post.title.toLoweCase().includes(searchTerm.toLoweCase())
-            );
-        }
-        return posts;
+  };
+ 
+  const selectPosts = (state) => state.reddit.posts;
+  const selectSearchTerm = (state) => state.reddit.searchTerm; //faltaba una d en reddit
+  export const selectSelectedSubreddit = (state) =>
+    state.reddit.selectedSubreddit;
+ 
+  export const selectFilteredPosts = createSelector(
+    [selectPosts, selectSearchTerm],
+    // aqui pusiste posts y en home.js post
+    (posts, searchTerm) => {
+      if (searchTerm !== '') {
+        return posts.filter((post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+ 
+      return posts;
     }
-);
+  );
