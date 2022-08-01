@@ -9,12 +9,12 @@ function App() {
   return (
     <div>
       <Header />
-      <main>
-        <Home />
-      </main>
       <aside>
         <Subreddits />
       </aside>
+      <main>
+        <Home />
+      </main>
     </div>
   );
 }

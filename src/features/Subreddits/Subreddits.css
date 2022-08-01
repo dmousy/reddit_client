@@ -34,8 +34,12 @@
   }
   
   .subreddits-list {
+    width: 100%;
+    flex-wrap: wrap;
+    display: flex;
     list-style: none;
     padding: 0;
+    justify-content: space-evenly
   }
   
   .subreddit-icon {
