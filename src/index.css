@@ -37,11 +37,10 @@ header {
 
 @media only screen and (max-width: 600px) {
   #root {
-    grid-template-columns: 1fr;
+    width: auto;
   }
 
   main {
-    grid-column: 1;
-    padding: 1rem;
+    width: auto;
   }
 }

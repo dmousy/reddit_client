@@ -34,7 +34,7 @@ const Header = () => {
         <form className="search" onSubmit={onSearchTermSubmit}>
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search on subreddit"
             value={searchTermLocal}
             onChange={onSearchTermChange}
             aria-label="Search posts"

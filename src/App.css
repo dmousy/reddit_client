@@ -1,5 +1,5 @@
 :root {
-  --color-background: #fcfcfc;
+  --color-background: #cacaca;
   --color-background-secondary: #f3f3f3;
   --color-foreground: #ffffff;
   --color-border: #e6e6e6;
@@ -8,7 +8,7 @@
   --color-text-secondary: #717171;
   --color-text-invert: #ffffff;
   --color-text-link: #4ec3f5;
-  --color-branding: #3d5af1;
+  --color-branding: #ff4500;
   --color-branding-transparent: #3d5af140;
 
   --color-alert: #ff304f;
@@ -20,12 +20,12 @@
   --box-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
 
-  --spacing-0: 4px;
-  --spacing-1: 8px;
-  --spacing-2: 16px;
-  --spacing-3: 24px;
-  --spacing-4: 36px;
-  --spacing-5: 64px;
+  --spacing-0: 0.25rem;
+  --spacing-1: 0.5rem;
+  --spacing-2: 1rem;
+  --spacing-3: 1.5rem;
+  --spacing-4: 2rem;
+  --spacing-5: 4.25px;
 
   --radius: 4px;
   --radius-2: 8px;

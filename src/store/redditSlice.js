@@ -7,7 +7,7 @@ const initialState = {
     error: false,
     isLoading: false,
     searchTerm: '',
-    selectedSubreddit: '/r/pixelart/',
+    selectedSubreddit: '/r/pics/',
   };
  
   const redditSlice = createSlice({
@@ -105,13 +105,13 @@ const initialState = {
   };
  
   const selectPosts = (state) => state.reddit.posts;
-  const selectSearchTerm = (state) => state.reddit.searchTerm; //faltaba una d en reddit
+  const selectSearchTerm = (state) => state.reddit.searchTerm; 
   export const selectSelectedSubreddit = (state) =>
     state.reddit.selectedSubreddit;
  
   export const selectFilteredPosts = createSelector(
     [selectPosts, selectSearchTerm],
-    // aqui pusiste posts y en home.js post
+
     (posts, searchTerm) => {
       if (searchTerm !== '') {
         return posts.filter((post) =>
